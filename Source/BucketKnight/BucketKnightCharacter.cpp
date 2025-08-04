@@ -34,7 +34,7 @@ ABucketKnightCharacter::ABucketKnightCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -49,6 +49,7 @@ ABucketKnightCharacter::ABucketKnightCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -88,6 +89,10 @@ void ABucketKnightCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 		// Attacking
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ABucketKnightCharacter::Attack);
+
+		// Sprinting
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ABucketKnightCharacter::StartSprinting);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ABucketKnightCharacter::StopSprinting);
 	}
 	else
 	{
@@ -134,4 +139,21 @@ void ABucketKnightCharacter::Look(const FInputActionValue& Value)
 void ABucketKnightCharacter::Attack(const FInputActionValue& Value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Attack action triggered!"));
+}
+
+void ABucketKnightCharacter::StartSprinting(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed; // Set sprint speed
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true; // Disable strafe movement
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Disable strafe movement
+
+}
+
+void ABucketKnightCharacter::StopSprinting(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; // Reset to default walk speed
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true; // Enable strafe movement
+	GetCharacterMovement()->bOrientRotationToMovement = false; // Enable strafe movement
 }

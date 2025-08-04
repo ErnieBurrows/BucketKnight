@@ -48,9 +48,19 @@ class ABucketKnightCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AttackAction;
 
+	/** Sprint Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SprintAction;
+
 public:
-	ABucketKnightCharacter();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float SprintSpeed = 600.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float WalkSpeed = 200.0f;
 	
+	ABucketKnightCharacter();
 
 protected:
 
@@ -62,6 +72,10 @@ protected:
 
 	/** Called for attack input */
 	void Attack(const FInputActionValue& Value);
+
+	/** Called for sprint input */
+	void StartSprinting(const FInputActionValue& Value);
+	void StopSprinting(const FInputActionValue& Value);
 			
 
 protected:
