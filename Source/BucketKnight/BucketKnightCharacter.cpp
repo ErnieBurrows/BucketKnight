@@ -28,6 +28,7 @@ ABucketKnightCharacter::ABucketKnightCharacter()
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
+	GetCharacterMovement()->bUseControllerDesiredRotation = true; 
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
@@ -155,5 +156,5 @@ void ABucketKnightCharacter::StopSprinting(const FInputActionValue& Value)
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; // Reset to default walk speed
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = true; // Enable strafe movement
-	GetCharacterMovement()->bOrientRotationToMovement = false; // Enable strafe movement
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Enable strafe movement
 }
